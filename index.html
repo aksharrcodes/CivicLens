@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CivicLens — See it. Route it. Resolve it.</title>
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--ink:#182333;--muted:#657184;--line:#e3e8ef;--paper:#f5f7fb;--white:#fff;--blue:#315de8;--navy:#14243b;--teal:#1a9b87;--amber:#b56b10;--red:#c44343}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.shell{max-width:1240px;margin:auto;padding:22px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{display:flex;gap:12px;align-items:center}.logo{background:var(--blue);color:white;border-radius:13px;width:44px;height:44px;display:grid;place-items:center;font-weight:900;font-size:20px}.brand h1{font-size:21px;margin:0;letter-spacing:-.5px}.brand p{margin:1px 0;color:var(--muted);font-size:12px}.top-right{display:flex;gap:9px;align-items:center}.pill{font-size:11px;font-weight:700;padding:6px 10px;border-radius:99px;background:#e9edff;color:#294bc2}.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700}.btn-primary{background:var(--blue);color:white}.btn-light{background:white;border:1px solid var(--line);color:var(--ink)}.hero{background:var(--navy);color:white;border-radius:19px;padding:25px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px;overflow:hidden}.eyebrow{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:800;color:#9eb3ff}.hero h2{font-size:clamp(24px,3vw,35px);line-height:1.1;letter-spacing:-1px;margin:8px 0}.hero p{color:#c5d0df;max-width:570px;margin:0}.hero-art{font-size:72px;opacity:.9;padding:0 24px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat,.panel{background:white;border:1px solid var(--line);border-radius:15px}.stat{padding:16px}.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:26px;font-weight:800;letter-spacing:-.8px;margin-top:4px}.stat .sub{font-size:11px;color:var(--muted)}.main-grid{display:grid;grid-template-columns:minmax(300px,.88fr) minmax(400px,1.35fr);gap:16px;align-items:start}.panel{padding:20px;margin-bottom:16px}.panel-head{display:flex;justify-content:space-between;gap:12px;align-items:start;margin-bottom:16px}.panel h3{margin:0;font-size:16px;letter-spacing:-.3px}.panel-head p{margin:4px 0 0;color:var(--muted);font-size:12px}.step{background:#edf1ff;color:#315de8;font-size:11px;font-weight:800;padding:5px 8px;border-radius:8px}.field{display:block;margin:13px 0}.field span{display:block;font-size:12px;font-weight:750;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid #dbe1ea;border-radius:9px;padding:10px 11px;background:white;color:var(--ink);outline:none}.field textarea{resize:vertical;min-height:90px}.field input:focus,.field select:focus,.field textarea:focus{border-color:#8ea4ff;box-shadow:0 0 0 3px #315de81c}.upload{border:1.5px dashed #b8c4d8;border-radius:12px;padding:17px;text-align:center;background:#fafbff}.upload strong{display:block;margin:5px}.upload small{color:var(--muted)}.upload input{max-width:100%;margin-top:10px}.preview{width:100%;max-height:180px;object-fit:cover;border-radius:9px;margin-top:10px;display:none}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hint{font-size:11px;color:var(--muted);margin:8px 0}.route-box{background:#f0f5ff;border:1px solid #dce6ff;padding:12px;border-radius:11px;margin:14px 0}.route-box .route-title{font-size:10px;color:#5269a6;font-weight:800;text-transform:uppercase;letter-spacing:.8px}.route-box strong{display:block;font-size:14px;margin:3px 0}.route-box p{margin:0;color:#566782;font-size:12px}.wide{width:100%}.section-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.filters{display:flex;gap:6px;flex-wrap:wrap}.filter{border:1px solid var(--line);border-radius:8px;background:white;padding:6px 9px;font-size:11px;font-weight:700;color:var(--muted)}.filter.active{background:#eaf0ff;color:#315de8;border-color:#d5dfff}#map{height:310px;border-radius:12px;border:1px solid var(--line);z-index:1}.legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.issue-list{display:grid;gap:10px}.issue{display:grid;grid-template-columns:46px 1fr auto;gap:11px;align-items:center;border:1px solid var(--line);padding:11px;border-radius:11px}.issue-icon{width:44px;height:44px;display:grid;place-items:center;background:#f1f4fa;border-radius:10px;font-size:21px}.issue h4{font-size:13px;margin:0 0 3px}.issue p{font-size:11px;color:var(--muted);margin:0}.status{font-size:10px;font-weight:800;border-radius:99px;padding:5px 7px;white-space:nowrap}.status.open{background:#fff2df;color:#9b5d0b}.status.review{background:#e9efff;color:#3559c7}.status.fixed{background:#e2f6ed;color:#167452}.empty{text-align:center;color:var(--muted);padding:25px;font-size:12px}.complaint-preview{border:1px solid var(--line);border-radius:10px;padding:13px;background:#fafbfe;white-space:pre-wrap;font-size:12px;min-height:100px}.notice{font-size:11px;color:#7b5a24;background:#fff7e8;border:1px solid #f3e1b9;padding:10px;border-radius:9px;margin-top:12px}.footer{text-align:center;color:var(--muted);font-size:11px;padding:12px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#17283f;color:white;padding:11px 16px;border-radius:10px;box-shadow:0 8px 30px #0002;display:none;z-index:9999;max-width:90vw}.tiny{font-size:10px;color:var(--muted)}@media(max-width:850px){.main-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero-art{display:none}.shell{padding:13px}.hero{padding:22px}.top-right .pill{display:none}}@media(max-width:460px){.row2{grid-template-columns:1fr}.issue{grid-template-columns:40px 1fr}.issue .status{grid-column:2;justify-self:start}.issue-icon{width:38px;height:38px}.brand h1{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+ <div class="brand"><div class="logo">CL</div><div><h1>CivicLens</h1><p>See it. Route it. Resolve it.</p></div></div>
+ <div class="top-right"><span class="pill">LUMINA'26 DEMO</span><button class="btn btn-light" id="resetBtn">Reset demo</button></div>
+</header>
+<section class="hero">
+ <div><div class="eyebrow">Civic issues, without the confusion</div><h2>Every problem deserves<br>a clear path to action.</h2><p>Report a local issue. CivicLens helps identify the likely responsible authority, drafts a complaint, and makes unresolved problems visible.</p></div>
+ <div class="hero-art">⌖</div>
+</section>
+<section class="stats">
+ <div class="stat"><div class="label">Issues on dashboard</div><div class="value" id="statTotal">3</div><div class="sub">Demo reports</div></div>
+ <div class="stat"><div class="label">Open issues</div><div class="value" id="statOpen">3</div><div class="sub">Awaiting action</div></div>
+ <div class="stat"><div class="label">Longest unresolved</div><div class="value" id="statLongest">12d</div><div class="sub">In this demo dataset</div></div>
+ <div class="stat"><div class="label">Authorities mapped</div><div class="value">3</div><div class="sub">Illustrative demo rules</div></div>
+</section>
+<div class="main-grid">
+ <div>
+  <section class="panel">
+   <div class="panel-head"><div><h3>Report a civic issue</h3><p>Start with a photo and a location.</p></div><span class="step">STEP 01</span></div>
+   <form id="reportForm">
+    <div class="upload"><div style="font-size:25px">▧</div><strong>Upload issue photo</strong><small>Streetlight, pothole, garbage or open drain</small><input type="file" id="photo" accept="image/*"><img id="preview" class="preview" alt="Selected issue preview"><div id="classifyBox" style="display:none;text-align:left;margin-top:12px;padding:11px;background:#eef3ff;border:1px solid #dbe5ff;border-radius:10px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;font-weight:800;color:#5269a6">Trained image model · optional API</div><div id="classifyResult" style="font-weight:800;margin:4px 0">Upload a photo to request a model prediction.</div><div id="classifyNote" class="tiny">The trained classifier supports pothole and garbage suggestions only. Other issue types must be selected manually.</div><label class="field" style="margin:9px 0"><span>AI service URL</span><input id="apiUrl" type="url" placeholder="https://your-civiclens-api.example.com" value="http://127.0.0.1:8000"></label><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px"><button type="button" class="btn btn-primary" id="aiClassBtn" style="padding:7px 10px;font-size:11px">Analyze with trained model</button></div><div id="aiStatus" class="tiny" style="margin-top:7px">Requires the CivicLens ML API and trained weights. If unavailable, choose the issue type manually.</div></div></div>
+    <div class="row2">
+     <label class="field"><span>Issue type</span><select id="issueType"><option value="Pothole">Pothole / damaged road</option><option value="Broken streetlight">Broken streetlight</option><option value="Garbage dump">Garbage dump</option><option value="Open drain">Open drain</option></select></label>
+     <label class="field"><span>Severity</span><select id="severity"><option>Medium</option><option>High</option><option>Low</option></select></label>
+    </div>
+    <label class="field"><span>Demo location / zone</span><select id="zone"><option value="sector62">Sector 62 (illustrative)</option><option value="sector18">Sector 18 (illustrative)</option><option value="village">Village / boundary area (verify)</option></select></label>
+    <div class="row2">
+     <label class="field"><span>Latitude</span><input id="lat" type="number" step="any" value="28.6139" required></label>
+     <label class="field"><span>Longitude</span><input id="lng" type="number" step="any" value="77.3730" required></label>
+    </div>
+    <button type="button" class="btn btn-light wide" id="locateBtn">◎ Use my current location</button>
+    <p class="hint">Location permission is optional. Demo zone rules are illustrative, not an official jurisdiction lookup.</p>
+    <label class="field"><span>Short description (optional)</span><input id="description" placeholder="e.g. Deep pothole near the bus stop"></label>
+    <button type="submit" class="btn btn-primary wide">Identify authority & draft complaint →</button>
+   </form>
+   <div id="routeBox" class="route-box" style="display:none"><div class="route-title">Likely responsible body · demo rule</div><strong id="authorityName"></strong><p id="authorityReason"></p></div>
+  </section>
+  <section class="panel" id="draftPanel" style="display:none">
+   <div class="panel-head"><div><h3>Ready-to-send complaint</h3><p>Review before sending; no portal submission is performed.</p></div><span class="step">STEP 02</span></div>
+   <label class="field"><span>Language</span><select id="language"><option value="en">English</option><option value="hi">हिन्दी</option></select></label>
+   <div id="complaintText" class="complaint-preview" contenteditable="true"></div>
+   <div class="row2" style="margin-top:11px"><button class="btn btn-primary" id="copyBtn">Copy complaint</button><button class="btn btn-light" id="saveBtn">Add to public map</button></div>
+   <div class="notice">Prototype honesty note: this creates a draft only. It does not contact a government department or verify an official jurisdiction.</div>
+  </section>
+ </div>
+ <div>
+  <section class="panel">
+   <div class="section-row"><div><h3>Public issue map</h3><p class="tiny">Clustered-looking demo pins · select a marker for details</p></div><span class="step">LIVE DEMO</span></div>
+   <div id="map"></div>
+   <div class="legend"><span><i class="dot" style="background:#c44343"></i>High severity</span><span><i class="dot" style="background:#d99a32"></i>Medium</span><span><i class="dot" style="background:#1a9b87"></i>Low</span></div>
+  </section>
+  <section class="panel">
+   <div class="section-row"><div><h3>Community issue tracker</h3><p class="tiny">Reports stay in this browser for the demo.</p></div><span id="issueCount" class="pill">3 reports</span></div>
+   <div class="filters"><button class="filter active" data-filter="All">All issues</button><button class="filter" data-filter="Open">Open</button><button class="filter" data-filter="Under review">Under review</button><button class="filter" data-filter="Resolved">Resolved</button></div>
+   <div class="issue-list" id="issueList" style="margin-top:13px"></div>
+  </section>
+ </div>
+</div>
+<div class="footer">CivicLens · Lumina'26 · Student prototype · Sample data and jurisdiction rules are illustrative</div>
+</div>
+<div id="toast" class="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const seedReports=[
+{id:'CL-104',type:'Pothole',severity:'High',zone:'Sector 62',authority:'Noida Authority (demo rule)',lat:28.6139,lng:77.3730,days:12,status:'Open',count:8,description:'Large pothole near a busy junction',icon:'🕳️'},
+{id:'CL-103',type:'Broken streetlight',severity:'Medium',zone:'Sector 18',authority:'Noida Authority (demo rule)',lat:28.5708,lng:77.3261,days:5,status:'Under review',count:4,description:'Streetlight not working after dark',icon:'💡'},
+{id:'CL-102',type:'Garbage dump',severity:'Low',zone:'Village / boundary area',authority:'Needs manual jurisdiction verification',lat:28.6270,lng:77.3550,days:3,status:'Open',count:3,description:'Waste accumulating beside the road',icon:'🗑️'}
+];
+let reports=JSON.parse(localStorage.getItem('civiclens_reports')||'null')||seedReports;
+let currentDraft=null, currentPhoto='', activeFilter='All', map=null, markers=[], suggestedType=null;
+const $=id=>document.getElementById(id);
+const zoneInfo={
+sector62:{name:'Noida Authority (demo rule)',reason:'Sector 62 is mapped to this authority for this demonstration only. Confirm the exact road owner before filing.'},
+sector18:{name:'Noida Authority (demo rule)',reason:'Sector 18 is mapped to this authority for this demonstration only. Confirm the exact road owner before filing.'},
+village:{name:'Needs manual jurisdiction verification',reason:'Boundary and village roads can involve different bodies. Do not assume ownership; verify before sending.'}
+};
+const iconFor=t=>({'Pothole':'🕳️','Broken streetlight':'💡','Garbage dump':'🗑️','Open drain':'🌊'}[t]||'📍');
+const severityColor=s=>s==='High'?'#c44343':s==='Low'?'#1a9b87':'#d99a32';
+function toast(msg){$('toast').textContent=msg;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2600)}
+function persist(){localStorage.setItem('civiclens_reports',JSON.stringify(reports))}
+function initMap(){if(!window.L){$('map').innerHTML='<p style="padding:18px">Map tiles require an internet connection. The issue list still works.</p>';return}map=L.map('map').setView([28.605,77.355],12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);renderMap()}
+function renderMap(){if(!map)return;markers.forEach(m=>map.removeLayer(m));markers=[];reports.forEach(r=>{const m=L.circleMarker([r.lat,r.lng],{radius:8+Math.min(r.count||1,8),color:'#fff',weight:2,fillColor:severityColor(r.severity),fillOpacity:.92}).addTo(map);m.bindPopup(`<b>${r.type}</b><br>${r.zone}<br>${r.status} · ${r.days} day(s) unresolved<br>${r.count||1} community report(s)<br><small>${r.authority}</small>`);markers.push(m)})}
+function renderStats(){$('statTotal').textContent=reports.length;$('statOpen').textContent=reports.filter(r=>r.status!=='Resolved').length;$('statLongest').textContent=(reports.filter(r=>r.status!=='Resolved').reduce((a,r)=>Math.max(a,r.days),0))+'d';$('issueCount').textContent=reports.length+' reports'}
+function renderList(){const list=$('issueList');const filtered=reports.filter(r=>activeFilter==='All'||r.status===activeFilter);if(!filtered.length){list.innerHTML='<div class="empty">No issues in this filter.</div>';return}list.innerHTML=filtered.slice().sort((a,b)=>b.days-a.days).map(r=>`<article class="issue"><div class="issue-icon">${r.icon||iconFor(r.type)}</div><div><h4>${esc(r.type)} <span class="tiny">· ${esc(r.id)}</span></h4><p>${esc(r.zone)} · ${r.days} day(s) unresolved</p><p>${r.count||1} reports · ${esc(r.authority)}</p><div style="margin-top:6px"><button class="filter" onclick="changeStatus('${r.id}')">Change status</button></div></div><span class="status ${r.status==='Resolved'?'fixed':r.status==='Under review'?'review':'open'}">${esc(r.status)}</span></article>`).join('')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){renderStats();renderList();renderMap()}
+window.changeStatus=id=>{const r=reports.find(x=>x.id===id);if(!r)return;const states=['Open','Under review','Resolved'];r.status=states[(states.indexOf(r.status)+1)%states.length];persist();render();toast(`${id}: ${r.status}`)}
+$('photo').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){toast('Please choose an image file.');return}if(f.size>12*1024*1024){toast('Choose an image under 12 MB for this demo.');e.target.value='';return}currentPhoto='';suggestedType=null;const reader=new FileReader();reader.onload=()=>{currentPhoto=reader.result;$('preview').src=currentPhoto;$('preview').style.display='block';$('classifyBox').style.display='block';$('classifyResult').textContent='Photo ready for analysis.';$('classifyNote').textContent='Model supports pothole and garbage only; verify any suggestion.';$('aiStatus').textContent='Press “Analyze with trained model” to call the configured CivicLens ML API.'};reader.readAsDataURL(f)});
+$('apiUrl').value=localStorage.getItem('civiclens_api_url')||$('apiUrl').value;
+$('apiUrl').addEventListener('change',()=>{localStorage.setItem('civiclens_api_url',$('apiUrl').value.trim().replace(/\/$/,''));});
+$('aiClassBtn').onclick=async()=>{
+  if(!currentPhoto){toast('Upload a photo first.');return}
+  const apiBase=$('apiUrl').value.trim().replace(/\/$/,'');
+  if(!apiBase){$('aiStatus').textContent='Enter the URL of the CivicLens ML API first.';return}
+  const btn=$('aiClassBtn');btn.disabled=true;btn.textContent='Analyzing…';$('aiStatus').textContent='Sending image to the configured ML service…';
+  try{
+    const blob=await (await fetch(currentPhoto)).blob();
+    const fd=new FormData();fd.append('file',blob,'civiclens-report.jpg');
+    const res=await fetch(apiBase+'/predict',{method:'POST',body:fd});
+    const data=await res.json().catch(()=>({detail:'The API returned a non-JSON response.'}));
+    if(!res.ok)throw new Error(data.detail||`API request failed (${res.status})`);
+    if(data.suggestion){suggestedType=data.suggestion;$('classifyResult').textContent=`Model suggestion: ${data.suggestion}`;$('classifyNote').textContent=`Scores: ${Object.entries(data.scores||{}).map(([k,v])=>`${k} ${(Number(v)*100).toFixed(1)}%`).join(' · ')}. These are model scores, not guaranteed probabilities. Confirm manually.`;$('aiStatus').textContent=data.message||'Prediction complete. Verify the image before applying the suggestion.';let apply=$('applyClassBtn');if(!apply){apply=document.createElement('button');apply.id='applyClassBtn';apply.type='button';apply.className='btn btn-light';apply.style.cssText='padding:7px 10px;font-size:11px';apply.textContent='Use suggested type';$('aiClassBtn').parentElement.prepend(apply);apply.onclick=()=>{if(suggestedType){$('issueType').value=suggestedType;toast('Model suggestion selected. Please verify it.')}}}}
+    else{$('classifyResult').textContent='No confident supported category';$('classifyNote').textContent=Object.entries(data.scores||{}).map(([k,v])=>`${k}: ${(Number(v)*100).toFixed(1)}%`).join(' · ')||'No model scores were returned.';$('aiStatus').textContent=data.message||'Choose the issue type manually.';suggestedType=null}
+    toast('Model response received. Verify before use.');
+  }catch(err){console.error('CivicLens ML API error:',err);$('aiStatus').textContent='AI service unavailable: '+String(err.message||err).slice(0,200)+'. Manual issue selection remains available.';toast('Could not reach the ML service.')}
+  finally{btn.disabled=false;btn.textContent='Analyze with trained model'}
+};
+$('locateBtn').onclick=()=>{if(!navigator.geolocation){toast('Geolocation is not supported in this browser.');return}navigator.geolocation.getCurrentPosition(p=>{$('lat').value=p.coords.latitude.toFixed(6);$('lng').value=p.coords.longitude.toFixed(6);toast('Location added. Choose the closest demo zone manually.')},()=>toast('Location unavailable or permission denied.'),{enableHighAccuracy:true,timeout:8000})};
+function makeComplaint(d,lang){if(lang==='hi')return `सेवा में,\n${d.authority}\n\nविषय: ${d.type} की समस्या के समाधान हेतु शिकायत\n\nमहोदय/महोदया,\nमैं ${d.zone} क्षेत्र में ${d.description||d.type+' की समस्या'} की सूचना देना चाहता/चाहती हूँ। इस समस्या की गंभीरता ${d.severity} है। कृपया स्थान का निरीक्षण कर आवश्यक कार्रवाई करने की कृपा करें।\n\nस्थान निर्देशांक: ${d.lat}, ${d.lng}\nसंदर्भ: ${d.id}\n\nकृपया शिकायत प्राप्त होने की पुष्टि और कार्रवाई की स्थिति साझा करें।\nधन्यवाद।`;
+return `To: ${d.authority}\nSubject: Request for action — ${d.type} in ${d.zone}\n\nDear Sir/Madam,\nI am reporting ${d.description||'a '+d.type.toLowerCase()+' issue'} in ${d.zone}. The assessed severity is ${d.severity}. Please inspect the location and arrange the necessary corrective action.\n\nLocation coordinates: ${d.lat}, ${d.lng}\nReference: ${d.id}\n\nPlease acknowledge this complaint and share an update on the action taken.\n\nRegards,\nA concerned resident`}
+$('reportForm').addEventListener('submit',e=>{e.preventDefault();const z=zoneInfo[$('zone').value];const id='CL-'+Math.floor(100+Math.random()*899);currentDraft={id,type:$('issueType').value,severity:$('severity').value,zone:$('zone').selectedOptions[0].text.replace(' (illustrative)',''),authority:z.name,lat:Number($('lat').value),lng:Number($('lng').value),days:0,status:'Open',count:1,description:$('description').value.trim(),icon:iconFor($('issueType').value),photo:currentPhoto};$('authorityName').textContent=z.name;$('authorityReason').textContent=z.reason;$('routeBox').style.display='block';$('draftPanel').style.display='block';$('complaintText').textContent=makeComplaint(currentDraft,$('language').value);$('draftPanel').scrollIntoView({behavior:'smooth',block:'start'});toast('Draft created. Review the authority before using it.')});
+$('language').onchange=()=>{if(currentDraft)$('complaintText').textContent=makeComplaint(currentDraft,$('language').value)};
+$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText($('complaintText').innerText);toast('Complaint copied.')}catch(e){toast('Select and copy the complaint text manually.')}};
+$('saveBtn').onclick=()=>{if(!currentDraft)return;const duplicate=reports.find(r=>r.type===currentDraft.type&&Math.abs(r.lat-currentDraft.lat)<0.001&&Math.abs(r.lng-currentDraft.lng)<0.001&&r.status!=='Resolved');if(duplicate){duplicate.count=(duplicate.count||1)+1;toast('Similar nearby report grouped into '+duplicate.id)}else{reports.unshift({...currentDraft});toast('Issue added to this browser’s demo dashboard.')}persist();render();$('routeBox').style.display='none';$('draftPanel').style.display='none';$('reportForm').reset();$('preview').style.display='none';$('classifyBox').style.display='none';currentPhoto='';currentDraft=null;suggestedType=null};
+document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeFilter=b.dataset.filter;renderList()});
+$('resetBtn').onclick=()=>{if(confirm('Reset the dashboard to the original sample reports?')){reports=seedReports.map(r=>({...r}));persist();render();toast('Demo data reset.')}};
+initMap();render();
+</script>
+</body>
+</html>
